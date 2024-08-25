@@ -34,20 +34,20 @@ export const login = async (req, res) => {
 
         const isUserExist = await getUserByUserName(userModel, username);
         if (!!isUserExist === false) {
-            return res.send({ statusCode: 401, error: 'Username and Passowrd are incorrect' })
+            return res.status(401).send({ statusCode: 401, message: 'Username and Passowrd are incorrect' })
         }
         const verifyUser = await decodedPassword(password, isUserExist.password)
         if (!!verifyUser) {
-            const token = createToken({ username: isUserExist.username })
-            res.send({ statusCode: 200, message: 'LoggedIn Successfully', token })
+            const token = createToken({ userId: isUserExist._id });
+            res.status(200).send({ statusCode: 200, message: 'LoggedIn Successfully', token })
         }
         else {
-            return res.send({ statusCode: 401, error: 'Username and Passowrd are incorrect' })
+            return res.status(401).send({ statusCode: 401, message: 'Username and Passowrd are incorrect' })
         }
     }
     catch (error) {
         console.log(error)
-        res.send({ statusCode: 500, message: 'Internal Server Error' })
+        res.status(500).send({ statusCode: 500, message: 'Internal Server Error' })
     }
 }
 
@@ -63,7 +63,7 @@ export const searchUser = async (req, res) => {
             },
             {
                 $project: {
-                    _id: 1, 
+                    _id: 1,
                     username: 1,
                     firstname: 1,
                     lastname: 1,
@@ -134,8 +134,8 @@ export const getUsers = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-    try{
-        const {id} = req.params;
+    try {
+        const { id } = req.params;
 
         const user = await userModel.findByIdAndDelete(id);
 
@@ -144,7 +144,7 @@ export const deleteUser = async (req, res) => {
         }
         else res.status(404).send({ message: 'User not found' });
     }
-    catch(err){
+    catch (err) {
         console.log(err)
         res.status(500).send({ message: 'Internal Server Error' });
     }
