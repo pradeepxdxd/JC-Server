@@ -50,3 +50,102 @@ export const login = async (req, res) => {
         res.send({ statusCode: 500, message: 'Internal Server Error' })
     }
 }
+
+export const searchUser = async (req, res) => {
+    try {
+        const { name } = req.query;
+
+        const users = await userModel.aggregate([
+            {
+                $match: {
+                    username: { $regex: name, $options: "i" }
+                }
+            },
+            {
+                $project: {
+                    _id: 1, 
+                    username: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    profileImage: 1
+                }
+            }
+        ]);
+
+        if (users && users.length > 0) {
+            res.status(200).send({ statusCode: 200, message: 'User fetched successfully', users });
+        }
+        else {
+            res.status(404).send({ statusCode: 404, message: 'Users not found' });
+        }
+    }
+    catch (err) {
+        console.log(err)
+        res.send({ statusCode: 500, message: 'Internal Server Error' })
+    }
+}
+
+export const getUserById = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.params.id);
+
+        if (user) {
+            res.status(200).send({ user, message: 'User get successfully' });
+        }
+        else res.status(404).send({ message: 'User not found' });
+    }
+    catch (err) {
+        console.log(err)
+        res.send({ statusCode: 500, message: 'Internal Server Error' })
+    }
+}
+
+export const getUsers = async (req, res) => {
+    try {
+        // Get page and limit from query parameters, with defaults
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        // Calculate the number of documents to skip
+        const skip = (page - 1) * limit;
+
+        // Find users with pagination
+        const users = await userModel.find({})
+            .skip(skip)
+            .limit(limit);
+
+        // Get total number of documents
+        const totalUsers = await userModel.countDocuments({});
+
+        if (users.length > 0) {
+            res.status(200).send({
+                users,
+                totalPages: Math.ceil(totalUsers / limit),
+                currentPage: page,
+                message: 'Users retrieved successfully',
+            });
+        } else {
+            res.status(404).send({ message: 'Users not found' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    try{
+        const {id} = req.params;
+
+        const user = await userModel.findByIdAndDelete(id);
+
+        if (user) {
+            res.status(204).send({ message: 'User deleted successfully' });
+        }
+        else res.status(404).send({ message: 'User not found' });
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+}
