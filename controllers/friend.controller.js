@@ -1,4 +1,4 @@
-import { getUserInfo, getUserInfoOfNoConnection } from "../helpers/user.js";
+import { getUserInfo, getUserInfoOfNoConnection, getAllUnBlockedFriends } from "../helpers/user.js";
 import friendModel from "../models/friend.model.js";
 
 export const sendFriendRequest = async (req, res) => {
@@ -111,6 +111,20 @@ export const getFriendInfo = async (req, res) => {
         }
 
     } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+}
+
+export const getUserFriends = async (req, res) => {
+    try{
+        const userId = req.params.id;
+
+        const getUsers = await getAllUnBlockedFriends(userId);
+
+        res.send({data : getUsers})
+    }
+    catch(err){
         console.log(err);
         res.status(500).send({ message: 'Internal Server Error' });
     }

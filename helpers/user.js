@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt'
 import userModel from '../models/user.model.js'
 import { PROFILE_IMAGE } from '../constants/avatar.js'
+import friendModel from '../models/friend.model.js'
+import mongoose from 'mongoose'
+import { getUserInfoByFriendSide, getUserInfoByUserSide } from '../schemas/userQueries/user.js'
 
 export const getUserByUserName = async (userModel, username) => {
     try {
@@ -85,11 +88,18 @@ export const getUserInfoOfNoConnection = async (res, friendId) => {
     }
 
     return {
-        friendId : user._id,
-        firstname : user.firstname,
-        lastname : user.lastname,
-        username : user.username,
-        firstname : user.firstname,
+        friendId: user._id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        username: user.username,
+        firstname: user.firstname,
         profileImage,
     }
+}
+
+export const getAllUnBlockedFriends = async (userId) => {
+    const userSide = await getUserInfoByUserSide(userId)
+    const friendSide = await getUserInfoByFriendSide(userId)
+
+    return [...userSide, ...friendSide];
 }

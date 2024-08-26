@@ -4,7 +4,8 @@ import {
     acceptFriendRequest,
     blockUser,
     unblockUser,
-    getFriendInfo
+    getFriendInfo,
+    getUserFriends
 }
     from '../controllers/friend.controller.js';
 
@@ -15,5 +16,6 @@ router.post('/send', sendFriendRequest);
 router.patch('/accept', acceptFriendRequest);
 router.patch('/block', blockUser);
 router.patch('/unblock', unblockUser);
+router.get('/:id', getUserFriends)
 
 export default router;
