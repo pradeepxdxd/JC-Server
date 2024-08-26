@@ -25,8 +25,7 @@ export const getUserInfoByUserSide = async (userId) => {
         {
             $project: {
                 _id: 0,
-                friendId: '$_id', // Rename _id to friendId
-                userId: '$friendId', // Rename friendId to userId
+                'userInfo._id': 1,
                 'userInfo.firstname': 1,
                 'userInfo.lastname': 1,
                 'userInfo.username': 1,
@@ -65,8 +64,7 @@ export const getUserInfoByFriendSide = async (userId) => {
         {
             $project: {
                 _id: 0,
-                friendId: '$_id', // Rename _id to friendId
-                userId: '$friendId', // Rename friendId to userId
+                'userInfo._id': 1,
                 'userInfo.firstname': 1,
                 'userInfo.lastname': 1,
                 'userInfo.username': 1,
