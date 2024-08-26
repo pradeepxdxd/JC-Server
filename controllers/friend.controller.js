@@ -1,5 +1,6 @@
 import { getUserInfo, getUserInfoOfNoConnection, getAllUnBlockedFriends } from "../helpers/user.js";
 import friendModel from "../models/friend.model.js";
+import { getUserWithSpecificProfileImage } from "../schemas/userQueries/user.js";
 
 export const sendFriendRequest = async (req, res) => {
     try {
@@ -12,7 +13,7 @@ export const sendFriendRequest = async (req, res) => {
         const requestSent = await friendModel.create({ userId: friendId, friendId: userId });
 
         if (requestSent) {
-            res.status(201).send({ message: 'Request sent' })
+            res.status(201).send({ message: 'Request sent', flag : 'USER SIDE', accept : false })
         }
         else res.status(404).send({ message: 'User not found' })
     }
@@ -32,7 +33,8 @@ export const acceptFriendRequest = async (req, res) => {
         const acceptRequest = await friendModel.findOneAndUpdate({ userId, friendId }, { accept: true, viewed: true }, { new: true });
 
         if (acceptRequest) {
-            res.status(203).send({ message: 'Request accepted' })
+            const user = await getUserWithSpecificProfileImage(friendId);
+            res.status(203).send({ message: 'Request accepted', accept : true, user });
         }
         else res.status(404).send({ message: 'User not found' })
     }
