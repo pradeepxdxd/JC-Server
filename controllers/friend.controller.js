@@ -107,7 +107,7 @@ export const getFriendInfo = async (req, res) => {
 
         else {
             const user = await getUserInfoOfNoConnection(res, friendId)
-            res.status(200).send({ message: 'No connection established', flag : 'NO CONNECTION', data : user });
+            res.status(200).send({ message: 'No connection established', flag: 'NO CONNECTION', data: user });
         }
 
     } catch (err) {
@@ -117,14 +117,19 @@ export const getFriendInfo = async (req, res) => {
 }
 
 export const getUserFriends = async (req, res) => {
-    try{
+    try {
         const userId = req.params.id;
 
         const getUsers = await getAllUnBlockedFriends(userId);
 
-        res.send({data : getUsers})
+        if (getUsers && getUsers.length > 0) {
+            res.status(200).send({ message: 'Friend List fetched successfully', data: getUsers })
+        }
+        else {
+            res.status(404).send({ message: 'You dont have connection yet!' })
+        }
     }
-    catch(err){
+    catch (err) {
         console.log(err);
         res.status(500).send({ message: 'Internal Server Error' });
     }
