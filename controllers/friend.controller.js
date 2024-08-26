@@ -118,15 +118,20 @@ export const getFriendInfo = async (req, res) => {
 
 export const getUserFriends = async (req, res) => {
     try {
-        const userId = req.params.id;
-
-        const getUsers = await getAllUnBlockedFriends(userId);
-
-        if (getUsers && getUsers.length > 0) {
-            res.status(200).send({ message: 'Friend List fetched successfully', data: getUsers })
+        const userId = req?.params?.id;
+        
+        if (!!userId) {
+            const getUsers = await getAllUnBlockedFriends(userId);
+    
+            if (getUsers && getUsers.length > 0) {
+                res.status(200).send({ message: 'Friend List fetched successfully', data: getUsers })
+            }
+            else {
+                res.status(404).send({ message: 'You dont have connection yet!' })
+            }
         }
         else {
-            res.status(404).send({ message: 'You dont have connection yet!' })
+            res.status(404).send({ message: 'User not found' })
         }
     }
     catch (err) {
