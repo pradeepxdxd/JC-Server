@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     visiblity: {
         type: String,
         enum: ['PUBLIC', 'PRIVATE', 'PORTECTED'],
-        default: 'PORTECTED'
+        default: 'PROTECTED'
     }
 }, {
     timestamps: true
