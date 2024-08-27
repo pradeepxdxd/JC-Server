@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     visiblity: {
         type: String,
-        enum: ['PUBLIC', 'PRIVATE', 'PORTECTED'],
+        enum: ['PUBLIC', 'PRIVATE', 'PROTECTED'],
         default: 'PROTECTED'
     }
 }, {

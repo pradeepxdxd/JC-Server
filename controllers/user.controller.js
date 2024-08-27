@@ -58,6 +58,8 @@ export const searchUser = async (req, res) => {
     try {
         const { name, userId } = req.query;
 
+        const mainUser = await userModel.findById(userId);
+
         const users = await userModel.aggregate([
             {
                 $match: {
@@ -82,14 +84,14 @@ export const searchUser = async (req, res) => {
         await users.forEach((user, index) => {
             let userExist = undefined;
             let friendExist = undefined;
-            
-            for(let i = 0;  i < userSide.length; i++) {
+
+            for (let i = 0; i < userSide.length; i++) {
                 if (userSide[i]?._id.toString() === user?._id.toString()) {
                     userExist = userSide[i];
                     break;
                 }
             }
-            for(let i = 0;  i < friendSide.length; i++) {
+            for (let i = 0; i < friendSide.length; i++) {
                 if (friendSide[i]?._id.toString() === user?._id.toString()) {
                     friendExist = friendSide[i];
                     break;
@@ -107,10 +109,14 @@ export const searchUser = async (req, res) => {
                     users[index] = { ...user, profileImage: PROFILE_IMAGE }
                 }
             }
+
+            if (userId.toString() === users[index]?._id.toString()) {
+                users[index] = { ...users[index], profileImage: mainUser?.profileImage }
+            }
         })
 
         if (users && users.length > 0) {
-            res.status(200).send({ statusCode: 200, message: 'User search list fetch successfully', users});
+            res.status(200).send({ statusCode: 200, message: 'User search list fetch successfully', users });
         }
         else {
             res.status(404).send({ statusCode: 404, message: 'Users not found' });
