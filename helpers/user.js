@@ -77,10 +77,10 @@ export const getUserInfoOfNoConnection = async (res, friendId) => {
 
     let profileImage;
 
-    if (user.visiblity === 'PUBLIC') {
+    if (user?.visiblity === 'PUBLIC') {
         profileImage = user.profileImage;
     }
-    else if (user.visiblity === 'PRIVATE' || user.visiblity === 'PROTECTED') {
+    else if (user?.visiblity === 'PRIVATE' || user?.visiblity === 'PROTECTED') {
         profileImage = PROFILE_IMAGE;
 
     } else {
