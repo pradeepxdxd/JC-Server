@@ -4,6 +4,6 @@ import { sendMessage, getMessages } from '../controllers/chat.controller.js';
 const router = Router();
 
 router.post('/send', sendMessage);
-router.get('/:id', getMessages);
+router.get('/messages', getMessages);
 
 export default router;

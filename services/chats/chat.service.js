@@ -1,5 +1,5 @@
-import { chatExitInChatModel, createChat } from "../../helpers/chat.js";
-import { getMessageByChatId } from "../../helpers/message.js";
+import { chatExitInChatModel, createChat, updateCreateChat } from "../../helpers/chat.js";
+import { getFriendMessage } from "../../helpers/message.js";
 import { usersExist } from "../common/common.js";
 import { createMessage } from "../messages/message.service.js";
 
@@ -54,9 +54,12 @@ export const sendMessageService = async (req, res) => {
 
 export const getMessagesService = async (req, res) => {
     try {
-        const messages = await getMessageByChatId(req.params.id);
+        const messages = await getFriendMessage(req.query);
         if (messages && messages.length > 0) {
             res.status(200).send({ message: 'Messages fetched successfully', data: messages })
+        }
+        else {
+            res.status(404).send({ message: 'No messages found' })
         }
     }
     catch (error) {
