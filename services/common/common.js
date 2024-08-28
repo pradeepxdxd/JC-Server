@@ -1,0 +1,1 @@
+export const usersExist = (senderId, receiverId) => (senderId === undefined || receiverId === undefined) || (senderId === '' || receiverId === '');
