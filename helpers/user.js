@@ -4,6 +4,7 @@ import { PROFILE_IMAGE } from '../constants/avatar.js'
 import friendModel from '../models/friend.model.js'
 import mongoose from 'mongoose'
 import { getUserInfoByFriendSide, getUserInfoByUserSide } from '../schemas/userQueries/user.js'
+import { chatExitInChatModel } from './chat.js'
 
 export const getUserByUserName = async (userModel, username) => {
     try {
@@ -97,9 +98,27 @@ export const getUserInfoOfNoConnection = async (res, friendId) => {
     }
 }
 
+export const getFriendsCurrentStatusOfMessage = async (users, userId) => {
+    if (users.length > 0) {
+        return await users.map(async user => {
+            const userChatExist = await chatExitInChatModel(user._id, userId);
+            if (Array.isArray(userChatExist)) {
+                return {
+                    ...user,
+                    ...userChatExist[0],
+                    chatId: userChatExist[0]?._id,
+                    _id: user._id
+                }
+            }
+            else return user;
+        })
+    }
+    else return [];
+}
+
 export const getAllUnBlockedFriends = async (userId) => {
     const userSide = await getUserInfoByUserSide(userId)
     const friendSide = await getUserInfoByFriendSide(userId)
-
-    return [...userSide, ...friendSide];
+    const allFriendsStatus = await getFriendsCurrentStatusOfMessage([...userSide, ...friendSide], userId)
+    return Promise.all(allFriendsStatus);
 }

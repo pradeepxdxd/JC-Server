@@ -16,6 +16,6 @@ router.post('/send', sendFriendRequest);
 router.patch('/accept', acceptFriendRequest);
 router.patch('/block', blockUser);
 router.patch('/unblock', unblockUser);
-router.get('/:id', getUserFriends)
+router.get('/:id', getUserFriends);
 
 export default router;

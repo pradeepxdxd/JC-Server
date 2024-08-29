@@ -1,16 +1,22 @@
 export const runSocketIO = (io, users) => {
     io.on('connection', (socket) => {
+        console.log('User connected', socket.id)
         socket.on('register', userId => {
             users[userId] = socket.id
         })
 
-        // Handle sending a message to a specific user
-        socket.on('private message', ({ to, message }) => {
-            const recipientSocketId = users[message.from];
-            if (recipientSocketId) {
-                io.to(recipientSocketId).emit('private message', message);
-            }
+        socket.on('join room', ({ userId1, userId2 }) => {
+            const roomId = getRoomId(userId1, userId2);
+            socket.join(roomId);
+            console.log(`User ${socket.id} joined room ${roomId}`);
         });
+
+        socket.on('private message', ({ userId1, userId2, message }) => {
+            const roomId = getRoomId(userId1, userId2);
+            console.log({userId1, userId2, roomId, msg:message?.message})
+            // Broadcast the message to all users in the room except the sender
+            socket.to(roomId).emit('private message', { ...message, userId1, userId2 });
+        }); 
 
         socket.on('disconnect', () => {
             // Remove the user from the list on disconnect
@@ -22,4 +28,8 @@ export const runSocketIO = (io, users) => {
             }
         });
     })
+}
+
+function getRoomId(userId1, userId2) {
+    return [userId1, userId2].sort().join('_');
 }

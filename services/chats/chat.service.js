@@ -1,5 +1,6 @@
 import { chatExitInChatModel, createChat, updateCreateChat } from "../../helpers/chat.js";
 import { getFriendMessage } from "../../helpers/message.js";
+import chatModel from "../../models/chat.model.js";
 import { usersExist } from "../common/common.js";
 import { createMessage } from "../messages/message.service.js";
 
@@ -16,8 +17,9 @@ export const sendMessageService = async (req, res) => {
         }
 
         const chatExist = await chatExitInChatModel(senderId, receiverId);
+
         if (chatExist && chatExist.length > 0) {
-            const updateExistedChat = await updateCreateChat({ senderId, receiverId, lastMessage, lastTime })
+            const updateExistedChat = await updateCreateChat({ senderId, receiverId, lastMessage, lastTime, chatExist })
             if (!!updateExistedChat?._id) {
                 const sentChat = await createMessage({ chatId: updateExistedChat?._id, senderId, message: lastMessage, time: lastTime });
                 if (!!sentChat?._id) {
@@ -64,5 +66,22 @@ export const getMessagesService = async (req, res) => {
     }
     catch (error) {
         res.status(500).send({ message: 'Internal Server Error' });
+    }
+}
+
+export const updateReadStatusService = async (req, res) => {
+    try {
+        if (!!req.params.id) {
+            const statusUpdated = await chatModel.findByIdAndUpdate(req.params.id, { receiverStatus: 'READ' }, { new: true })
+            if (!!statusUpdated?._id)
+                return res.status(201).send({ message: "Message read by user" })
+            else res.status(400).send({ message: "Something went wrong" })
+        }
+        else {
+            res.status(404).send({ message: "Chat not found" })
+        }
+    }
+    catch (err) {
+        res.status(500).send({ message: "Internal server error" })
     }
 }

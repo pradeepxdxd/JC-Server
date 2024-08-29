@@ -41,7 +41,7 @@ export const login = async (req, res) => {
         }
         const verifyUser = await decodedPassword(password, isUserExist.password)
         if (!!verifyUser) {
-            const token = createToken({ userId: isUserExist._id });
+            const token = createToken({ userId: isUserExist._id, name: isUserExist.firstname });
             res.status(200).send({ statusCode: 200, message: 'LoggedIn Successfully', token })
         }
         else {
