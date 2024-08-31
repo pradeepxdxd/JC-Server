@@ -30,7 +30,8 @@ app.use('/api/v1', route);
 
 // socket.io
 const users = {};
-runSocketIO(io, users)
+const userToVideoCallRoom = new Map();
+runSocketIO(io, users, userToVideoCallRoom)
 
 server.listen(PORT, (_, err) => {
     if (err) console.log('Something went wrong')

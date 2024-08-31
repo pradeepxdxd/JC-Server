@@ -193,6 +193,24 @@ export const deleteUser = async (req, res) => {
     }
 }
 
+export const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { firstname, lastname, profileImage } = req.body;
+
+        const user = await userModel.findByIdAndUpdate(id, { firstname, lastname, profileImage }, { new: true });
+
+        if (user) {
+            res.status(201).send({ message: 'User updated successfully', user });
+        }
+        else res.status(404).send({ message: 'User not found' });
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send({ message: 'Internal Server Error' });
+    }
+}
+
 // export const searchUser = async (req, res) => {
 //     try {
 //         const { name, userId } = req.query;
