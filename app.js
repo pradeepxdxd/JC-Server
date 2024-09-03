@@ -29,9 +29,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/api/v1', route);
 
 // socket.io
-const users = {};
-const userToVideoCallRoom = new Map();
-runSocketIO(io, users, userToVideoCallRoom)
+
+runSocketIO(io)
 
 server.listen(PORT, (_, err) => {
     if (err) console.log('Something went wrong')
