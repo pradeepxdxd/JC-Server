@@ -35,9 +35,9 @@ export const runSocketIO = io => {
             socket.to(friendSocketId).emit('friend-typing', typingUsersData);
         })
 
-        socket.on('send-current-message', ({userId, friendId, message, time}) => {
+        socket.on('send-current-message', ({ userId, friendId, message, time }) => {
             const friendSocketId = activeUsers[friendId];
-            userCurrentMessages.set(userId, {message, time});
+            userCurrentMessages.set(userId, { message, time });
             const userMessages = Object.fromEntries(userCurrentMessages);
             socket.to(friendSocketId).emit('show-current-message', userMessages);
         })
