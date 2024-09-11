@@ -196,9 +196,9 @@ export const deleteUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { firstname, lastname, profileImage } = req.body;
+        const { firstname, lastname, profileImage, visiblity } = req.body;
 
-        const user = await userModel.findByIdAndUpdate(id, { firstname, lastname, profileImage }, { new: true });
+        const user = await userModel.findByIdAndUpdate(id, { firstname, lastname, profileImage, visiblity }, { new: true });
 
         if (user) {
             res.status(201).send({ message: 'User updated successfully', user });
