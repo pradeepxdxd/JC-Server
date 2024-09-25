@@ -4,6 +4,9 @@ import { createToken } from "../helpers/token.js";
 import { hashingPassword, getUserByUserName, decodedPassword } from "../helpers/user.js";
 import userModel from "../models/user.model.js"
 import { getUserInfoByFriendSide, getUserInfoByUserSide } from "../schemas/userQueries/user.js";
+import { googleLoginService } from "../services/auth/auth.service.js";
+
+export const googleLogin = async (req, res) => await googleLoginService(req, res);
 
 export const resgister = async (req, res) => {
     try {
