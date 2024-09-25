@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { oauth2client } from '../../config/google.config.js'
 import { getOAuth2ClientUserToken, isUserExists, createUser } from '../../helpers/auth.js';
 import { createToken } from '../../helpers/token.js';
