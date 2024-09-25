@@ -9,7 +9,7 @@ export const googleLoginService = async (req, res) => {
         const googleResponse = await oauth2client.getToken(code);
         oauth2client.setCredentials(googleResponse.tokens);
         const userResponse = await getOAuth2ClientUserToken(googleResponse.tokens.access_token);
-
+        console.log({userResponse})
         let user = await isUserExists(userResponse.data.email);
         if (!user) {
             user = await createUser(userResponse.data);
