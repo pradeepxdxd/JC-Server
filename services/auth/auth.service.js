@@ -5,8 +5,9 @@ import { createToken } from '../../helpers/token.js';
 export const googleLoginService = async (req, res) => {
     try {
         const { code } = req.query;
-
+        console.log({code})
         const googleResponse = await oauth2client.getToken(code);
+        console.log({googleResponse})
         oauth2client.setCredentials(googleResponse.tokens);
         const userResponse = await getOAuth2ClientUserToken(googleResponse.tokens.access_token);
         let user = await isUserExists(userResponse.data.email);
